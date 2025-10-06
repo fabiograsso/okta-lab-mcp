@@ -1,0 +1,3 @@
+[submodule "okta-mcp-server"]
+	path = okta-mcp-server
+	url = https://github.com/okta/okta-mcp-server

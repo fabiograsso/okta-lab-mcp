@@ -1,0 +1,53 @@
+services:
+  okta-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - OKTA_ORG_URL=${OKTA_ORG_URL}
+      - OKTA_CLIENT_ID=${OKTA_CLIENT_ID}
+      - OKTA_KEY_ID=${OKTA_KEY_ID}
+      - OKTA_PRIVATE_KEY=${OKTA_PRIVATE_KEY}
+      - OKTA_SCOPES=${OKTA_SCOPES:-okta.users.read}
+      - OKTA_LOG_LEVEL=${OKTA_LOG_LEVEL:-INFO}
+    volumes:
+      - ./data/okta-mcp/logs:/app/logs:rw
+    stdin_open: true
+    tty: true
+    command: ["sh", "-c", "while true; do sleep 30; done"]
+
+  okta-mcp-server-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile-gateway
+    environment:
+      - OKTA_ORG_URL=${OKTA_ORG_URL}
+      - OKTA_CLIENT_ID=${OKTA_CLIENT_ID}
+      - OKTA_KEY_ID=${OKTA_KEY_ID}
+      - OKTA_PRIVATE_KEY=${OKTA_PRIVATE_KEY}
+      - OKTA_SCOPES=${OKTA_SCOPES:-okta.users.read}
+      - OKTA_LOG_LEVEL=${OKTA_LOG_LEVEL:-INFO}
+    volumes:
+      - ./data/okta-mcp/logs:/app/logs:rw
+      - ./data/okta-mcp/config:/app/config:rw
+    stdin_open: true
+    tty: true
+    ports:
+      - "8000:8000"
+
+  gemini-cli:
+    image: us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.1
+    volumes:
+    - ./data/gemini/:/home/node/.gemini/:rw
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - NODE_ENV=${GEMINI_ENV:-production}
+    user: "1000:1000"
+    depends_on:
+      - okta-mcp-server-gateway
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["tail -f /dev/null"]
+
+networks:
+  default:
+    name: okta-gemini-network

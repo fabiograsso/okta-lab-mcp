@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "okta-docker": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e", "OKTA_ORG_URL=https://xxxx.okta.com",
+        "-e", "OKTA_CLIENT_ID=xxxx",
+        "-e", "OKTA_SCOPES=okta.users.read okta.groups.read okta.logs.read okta.apps.read okta.userTypes.read",
+        "-e", "OKTA_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\nxxxxxxxx\n-----END PRIVATE KEY-----",
+        "-e", "OKTA_KEY_ID=xxxxx",
+        "-e", "OKTA_LOG_LEVEL=DEBUG",
+        "-v",
+        "okta-mcp-server:latest"
+      ],
+      "env": {
+        "API_KEY": "$GEMINI_API_KEY"
+      }
+    },
+    "okta-gateway": {
+      "httpUrl": "http://localhost:8000/mcp"
+    }
+  }
+}
