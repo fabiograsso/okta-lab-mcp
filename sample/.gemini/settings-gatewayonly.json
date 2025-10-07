@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "okta": {
+      "httpUrl": "http://okta-mcp-server-gateway:8000/mcp"
+    }
+  },
+  "security": {
+    "auth": {
+      "selectedType": "gemini-api-key"
+    }
+  },
+  "ui": {
+    "theme": "Default"
+  }
+}

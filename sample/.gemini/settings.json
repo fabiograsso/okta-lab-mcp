@@ -14,10 +14,7 @@
         "-e", "OKTA_LOG_LEVEL=DEBUG",
         "-v",
         "okta-mcp-server:latest"
-      ],
-      "env": {
-        "API_KEY": "$GEMINI_API_KEY"
-      }
+      ]
     },
     "okta-gateway": {
       "httpUrl": "http://localhost:8000/mcp"
