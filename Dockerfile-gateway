@@ -13,8 +13,10 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-CMD ["sh", "-c", "npx -y supergateway --stdio 'uv run okta-mcp-server' --outputTransport streamableHttp --stateful --port 8000 --healthEndpoint /healthz"]
-# --logLevel debug
+ENV GATEWAY_LOG_LEVEL=info
+
+CMD ["sh", "-c", "npx -y supergateway --stdio 'uv run okta-mcp-server' --outputTransport streamableHttp --stateful --port 8000 --healthEndpoint /healthz --logLevel $GATEWAY_LOG_LEVEL"]
+
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
