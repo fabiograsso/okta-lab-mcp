@@ -58,18 +58,18 @@ check_env_file() {
         return 1
     fi
     
-    # Check required variables
-    required_vars=("OKTA_ORG_URL" "OKTA_CLIENT_ID")
+    # Check required variables in .env file
+    required_vars=("OKTA_ORG_URL" "OKTA_CLIENT_ID" "OKTA_SCOPES")
     missing_vars=()
         
     for var in "${required_vars[@]}"; do
-        if [ -z "${!var}" ]; then
+        if ! grep -q "^${var}=" .env || grep -q "^${var}=$" .env || grep -q "^${var}=\s*$" .env; then
             missing_vars+=("$var")
         fi
     done
     
     if [ ${#missing_vars[@]} -gt 0 ]; then
-        log_error "Missing variables in .env: ${missing_vars[*]}"
+        log_error "Missing or empty variables in .env: ${missing_vars[*]}"
         return 1
     fi
     
