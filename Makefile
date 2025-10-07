@@ -119,6 +119,10 @@ update: ## Pull latest changes and rebuild
 	@$(MAKE) build
 
 # Configuration Commands
+check: ## Verify environment and source
+	@./docker-utils.sh check-env
+	@./docker-utils.sh check-source
+
 check-env: ## Verify .env configuration
 	@./docker-utils.sh check-env
 
