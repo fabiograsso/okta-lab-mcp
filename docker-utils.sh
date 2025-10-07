@@ -59,7 +59,7 @@ check_env_file() {
     fi
     
     # Check required variables
-    required_vars=("OKTA_ORG_URL" "OKTA_CLIENT_ID" "OKTA_SCOPES")
+    required_vars=("OKTA_ORG_URL" "OKTA_CLIENT_ID")
     missing_vars=()
         
     for var in "${required_vars[@]}"; do
