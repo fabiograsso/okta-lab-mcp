@@ -377,7 +377,7 @@ docker compose up -d okta-mcp-server-gateway
 | Host Path | Container Path | Purpose |
 |-----------|---------------|---------|
 | ./data/okta-mcp/logs | /app/logs | MCP Server logs |
-| ./data/gemini | /home/gemini | Gemini workspace |
+| ./data/gemini | /home/node/.gemini/ | Gemini workspace |
 
 ---
 

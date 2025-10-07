@@ -16,7 +16,6 @@ services:
       - GATEWAY_LOG_LEVEL=${GATEWAY_LOG_LEVEL:-info}
     volumes:
       - ./data/okta-mcp/logs:/app/logs:rw
-      - ./data/okta-mcp/config:/app/config:rw
     stdin_open: true
     tty: true
     restart: unless-stopped
@@ -38,7 +37,7 @@ services:
     command: ["tail -f /dev/null"]
     platform: linux/amd64 # Workaround for compatibility with MacOS
     restart: unless-stopped
-    working_dir: /home/node
+    working_dir: /home/gemini
 
 networks:
   default:
