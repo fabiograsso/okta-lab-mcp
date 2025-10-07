@@ -9,10 +9,13 @@ LABEL org.opencontainers.image.description="Okta MCP Server with HTTP Gateway (S
 
 # Install Node.js and npm (required for npx)
 RUN apt-get update && \
-    apt-get install -y nodejs npm && \
+    apt-get install -y nodejs npm curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-CMD ["sh", "-c", "npx -y supergateway --stdio 'uv run okta-mcp-server' --outputTransport streamableHttp --stateful --port 8000"]
-
+CMD ["sh", "-c", "npx -y supergateway --stdio 'uv run okta-mcp-server' --outputTransport streamableHttp --stateful --port 8000 --healthEndpoint /healthz"]
+# --logLevel debug
 EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+            CMD curl -fs http://localhost:8000/healthz | grep 'ok'

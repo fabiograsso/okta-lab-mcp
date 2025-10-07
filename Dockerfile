@@ -33,4 +33,4 @@ ENV OKTA_LOG_FILE=/app/logs/okta-mcp.log
 CMD ["uv", "run", "okta-mcp-server"]
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-            CMD ["python3.13", "-c", "import sys; sys.exit(0)"]
+            CMD ["python3.13", "-c 'import sys; sys.exit(0)'"]

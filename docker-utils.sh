@@ -92,8 +92,8 @@ check_okta_source() {
         log_info "Attempting to clone from GitHub..."
         
         # Try to clone the official repository
-        if git clone https://github.com/oktadev/okta-mcp-server.git 2>/dev/null; then
-            log_success "Okta MCP Server source cloned successfully"
+        if git submodule foreach git pull origin main 2>/dev/null; then
+            log_success "Okta MCP Server source updated successfully"
         else
             log_error "Failed to clone. Please manually add okta-mcp-server source"
             return 1
@@ -135,7 +135,7 @@ build_images() {
             return 1
         fi
     fi
-    
+
     log_success "All images built successfully"
 }
 

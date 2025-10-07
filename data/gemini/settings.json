@@ -4,6 +4,12 @@
       "httpUrl": "http://okta-mcp-server-gateway:8000/mcp"
     }
   },
-  "selectedAuthType": "gemini-api-key",
-  "theme": "Default"
+  "security": {
+    "auth": {
+      "selectedType": "gemini-api-key"
+    }
+  },
+  "ui": {
+    "theme": "Default"
+  }
 }

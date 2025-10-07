@@ -541,7 +541,7 @@ You have different ways to start the gemini-cli:
    --network okta-gemini-network \
    -v ./data/gemini:/home/node/.gemini:rw \
    -e GEMINI_API_KEY="${GEMINI_API_KEY}" \
-   us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.1
+   us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.7.0
    ```
 4. **Local Installation**:
    ```bash

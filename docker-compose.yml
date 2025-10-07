@@ -1,25 +1,11 @@
 services:
-  okta-mcp-server:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      - OKTA_ORG_URL=${OKTA_ORG_URL}
-      - OKTA_CLIENT_ID=${OKTA_CLIENT_ID}
-      - OKTA_KEY_ID=${OKTA_KEY_ID}
-      - OKTA_PRIVATE_KEY=${OKTA_PRIVATE_KEY}
-      - OKTA_SCOPES=${OKTA_SCOPES:-okta.users.read}
-      - OKTA_LOG_LEVEL=${OKTA_LOG_LEVEL:-INFO}
-    volumes:
-      - ./data/okta-mcp/logs:/app/logs:rw
-    stdin_open: true
-    tty: true
-    command: ["sh", "-c", "while true; do sleep 30; done"]
 
   okta-mcp-server-gateway:
+    image: okta-mcp-server-gateway:latest
     build:
       context: .
       dockerfile: Dockerfile-gateway
+    pull_policy: never
     environment:
       - OKTA_ORG_URL=${OKTA_ORG_URL}
       - OKTA_CLIENT_ID=${OKTA_CLIENT_ID}
@@ -32,11 +18,12 @@ services:
       - ./data/okta-mcp/config:/app/config:rw
     stdin_open: true
     tty: true
+    restart: unless-stopped
     ports:
       - "8000:8000"
 
   gemini-cli:
-    image: us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.1
+    image: us-docker.pkg.dev/gemini-code-dev/gemini-cli/${GEMINI_CLI_VERSION:-sandbox:0.7.0}
     volumes:
     - ./data/gemini/:/home/node/.gemini/:rw
     environment:
@@ -44,10 +31,14 @@ services:
       - NODE_ENV=${GEMINI_ENV:-production}
     user: "1000:1000"
     depends_on:
-      - okta-mcp-server-gateway
+      okta-mcp-server-gateway:
+        condition: service_healthy
     entrypoint: ["/bin/sh", "-c"]
     command: ["tail -f /dev/null"]
+    platform: linux/amd64 # Workaround for compatibility with MacOS
+    restart: unless-stopped
 
 networks:
   default:
-    name: okta-gemini-network
+    name: okta-mcp-lab-network
+    driver: bridge
