@@ -341,7 +341,7 @@ You can run both the MCP Server + Gateway and Gemini-cli:
 
 ```bash
 # Start all services (recommended for lab)
-docker-compose up -d
+docker compose up -d
 
 # Services running:
 # - MCP Server + HTTP Gateway (port 8000)
@@ -367,7 +367,7 @@ docker run -i --rm \
 
 ```bash
 # Start just the gateway
-docker-compose up -d okta-mcp-server-gateway
+docker compose up -d okta-mcp-server-gateway
 
 # Access at http://localhost:8000
 ```
@@ -490,7 +490,7 @@ I suggest in any case to keep only one active at time.
 Ready-to-use configuration for Claude Desktop.
 
 ### Gemini CLI (sample/.gemini/settings.json)
-Ready-to-use configuration for Gemini-cli (if you run it locally instead of inside the docker-compose).
+Ready-to-use configuration for Gemini-cli (if you run it locally instead of inside the docker compose).
 
 ---
 
@@ -528,9 +528,9 @@ You have different ways to start the gemini-cli:
 
 1. **Docker Desktop**: Open the `gemini-cli` container, go to the Exec tab and run `gemini`
     ![Gemini CLI in Docker Desktop](img/gemini-cli-docker-desktop.png)
-2. **Exec gemini in the docker-compose:
+2. **Exec gemini in the docker compose:
     ```bash
-    docker-compose exec gemini-cli gemini
+    docker compose exec gemini-cli gemini
 
     # or
     make gemini

@@ -49,7 +49,7 @@ check_prerequisites() {
     log_success "All prerequisites are satisfied"
 }
 
-# Check .env file (only needed for docker-compose)
+# Check .env file (only needed for docker compose)
 check_env_file() {
     if [ ! -f ".env" ]; then
         log_warning ".env file not found. Creating from template..."
@@ -59,7 +59,7 @@ check_env_file() {
     fi
     
     # Check required variables
-    required_vars=("OKTA_ORG_URL" "OKTA_CLIENT_ID")
+    required_vars=("OKTA_ORG_URL" "OKTA_CLIENT_ID" "OKTA_SCOPES")
     missing_vars=()
         
     for var in "${required_vars[@]}"; do
@@ -78,21 +78,7 @@ check_env_file() {
 }
 
 # Create env template
-create_env_template() {
-    cat > example.env <<'EOF'
-# Okta Configuration (Required for docker-compose)
-OKTA_ORG_URL=https://your-org.okta.com
-OKTA_CLIENT_ID=your_client_id
-OKTA_KEY_ID=your_key_id
-OKTA_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
-OKTA_SCOPES=okta.users.read okta.groups.read okta.apps.read okta.logs.read
-OKTA_LOG_LEVEL=INFO
-
-# Gemini Configuration (Optional)
-GEMINI_API_KEY=your_gemini_api_key
-GEMINI_ENV=production
-EOF
-    
+create_env_template() {    
     if [ ! -f ".env" ]; then
         cp example.env .env
         log_info "Created .env from template"
@@ -162,7 +148,7 @@ start_services() {
     else
         log_info "Starting all services..."
         check_env_file || {
-            log_error ".env configuration required for docker-compose"
+            log_error ".env configuration required for docker compose"
             return 1
         }
     fi
@@ -170,21 +156,21 @@ start_services() {
     check_okta_source || return 1
     
     if [ -n "$services" ]; then
-        docker-compose up -d $services
+        docker compose up -d $services
     else
-        docker-compose up -d
+        docker compose up -d
     fi
     
     log_success "Services started"
     
     # Display status
-    docker-compose ps
+    docker compose ps
 }
 
 # Stop services
 stop_services() {
     log_info "Stopping services..."
-    docker-compose down
+    docker compose down
     log_success "Services stopped"
 }
 
@@ -193,9 +179,9 @@ show_logs() {
     local service=${1:-""}
     
     if [ -n "$service" ]; then
-        docker-compose logs -f "$service"
+        docker compose logs -f "$service"
     else
-        docker-compose logs -f
+        docker compose logs -f
     fi
 }
 
@@ -204,7 +190,7 @@ cleanup() {
     log_info "Cleaning up Docker resources..."
     
     # Stop and remove containers
-    docker-compose down -v
+    docker compose down -v
     
     # Remove local images
     docker rmi okta-mcp-server:latest 2>/dev/null || true
@@ -220,27 +206,27 @@ cleanup() {
 shell() {
     local service=${1:-okta-mcp-server}
     
-    if ! docker-compose ps --services | grep -q "^$service$"; then
+    if ! docker compose ps --services | grep -q "^$service$"; then
         log_error "Service $service not found"
         log_info "Available services:"
-        docker-compose ps --services
+        docker compose ps --services
         return 1
     fi
     
     log_info "Opening shell in $service..."
-    docker-compose exec "$service" /bin/bash || docker-compose exec "$service" /bin/sh
+    docker compose exec "$service" /bin/bash || docker compose exec "$service" /bin/sh
 }
 
 # Run Gemini CLI inside container
 gemini() {
-    if ! docker-compose ps | grep -q "gemini-cli.*Up"; then
+    if ! docker compose ps | grep -q "gemini-cli.*Up"; then
         log_error "Gemini CLI service is not running"
         log_info "Start it with: make start-gemini"
         return 1
     fi
     
     log_info "Opening Gemini CLI shell..."
-    docker-compose exec gemini-cli gemini
+    docker compose exec gemini-cli gemini
 }
 
 # Check service health
@@ -248,7 +234,7 @@ check_health() {
     log_info "Checking service health..."
     
     # Check if containers are running
-    running_services=$(docker-compose ps --services --filter "status=running" 2>/dev/null | wc -l)
+    running_services=$(docker compose ps --services --filter "status=running" 2>/dev/null | wc -l)
     
     if [ "$running_services" -eq 1 ]; then
         log_warning "No services are running"
@@ -256,12 +242,12 @@ check_health() {
     fi
     
     # Check okta-mcp-server
-    if docker-compose ps | grep -q "okta-mcp-server.*Up"; then
+    if docker compose ps | grep -q "okta-mcp-server.*Up"; then
         log_success "okta-mcp-server is running"
     fi
     
     # Check gateway
-    if docker-compose ps | grep -q "okta-mcp-server-gateway.*Up"; then
+    if docker compose ps | grep -q "okta-mcp-server-gateway.*Up"; then
         if curl -s -o /dev/null -w "%{http_code}" http://localhost:8000 | grep -q "200\|404"; then
             log_success "Gateway is responding on port 8000"
         else
@@ -270,7 +256,7 @@ check_health() {
     fi
     
     # Check Gemini CLI
-    if docker-compose ps | grep -q "gemini-cli.*Up"; then
+    if docker compose ps | grep -q "gemini-cli.*Up"; then
         log_success "Gemini CLI container is running"
     fi
 }
@@ -279,7 +265,7 @@ check_health() {
 test_gateway() {
     log_info "Testing gateway endpoint..."
     
-    if ! docker-compose ps | grep -q "okta-mcp-server-gateway.*Up"; then
+    if ! docker compose ps | grep -q "okta-mcp-server-gateway.*Up"; then
         log_error "Gateway service is not running"
         log_info "Start it with: make start-gateway"
         return 1
@@ -333,7 +319,7 @@ main() {
             shell "$@"
             ;;
         "status"|"ps")
-            docker-compose ps
+            docker compose ps
             ;;
         "health")
             check_health

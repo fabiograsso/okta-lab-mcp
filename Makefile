@@ -35,7 +35,7 @@ setup: ## Initial setup (directories, env template, source check)
 	@echo "$(GREEN)Setting up environment...$(NC)"
 	@chmod +x docker-utils.sh 2>/dev/null || true
 #	@./docker-utils.sh setup
-	@echo "$(GREEN)Setup complete! Configure .env if using docker-compose$(NC)"
+	@echo "$(GREEN)Setup complete! Configure .env if using docker compose$(NC)"
 
 build: ## Build all Docker images
 	@echo "$(GREEN)Building Docker images...$(NC)"
@@ -73,21 +73,21 @@ restart: ## Restart services
 
 # Logging Commands
 logs: ## Show logs for main service
-	@docker-compose logs -f okta-mcp-server-gateway
+	@docker compose logs -f okta-mcp-server-gateway
 
 logs-gateway: ## Show logs for gateway service
-	@docker-compose logs -f okta-mcp-server-gateway
+	@docker compose logs -f okta-mcp-server-gateway
 
 logs-mcp: ## Show logs for MCP server service
-	@docker-compose exec -it okta-mcp-server tail -f /var/log/okta-mcp/server.log
+	@docker compose exec -it okta-mcp-server tail -f /var/log/okta-mcp/server.log
 
 logs-all: ## Show logs for all services
-	@docker-compose logs -f
+	@docker compose logs -f
 
 # Utility Commands
 status: ## Display service status
 	@echo "$(GREEN)Service Status:$(NC)"
-	@docker-compose ps
+	@docker compose ps
 
 shell: ## Open shell in main container
 	@./docker-utils.sh shell okta-mcp-server
@@ -108,7 +108,7 @@ clean: ## Clean Docker resources (containers, volumes)
 
 clean-all: ## Complete cleanup including images
 	@echo "$(RED)Removing all resources including images...$(NC)"
-	@docker-compose down -v --rmi all --remove-orphans
+	@docker compose down -v --rmi all --remove-orphans
 	@docker system prune -af
 	@echo "$(GREEN)Complete cleanup finished$(NC)"
 
@@ -128,15 +128,15 @@ check-source: ## Verify okta-mcp-server source
 # Debug Commands
 debug: ## Run services in debug mode
 	@echo "$(GREEN)Starting in debug mode...$(NC)"
-	@OKTA_LOG_LEVEL=DEBUG docker-compose up
+	@OKTA_LOG_LEVEL=DEBUG docker compose up
 
 debug-gateway: ## Debug gateway service only
 	@echo "$(GREEN)Starting gateway in debug mode...$(NC)"
-	@OKTA_LOG_LEVEL=DEBUG docker-compose up okta-mcp-server-gateway
+	@OKTA_LOG_LEVEL=DEBUG docker compose up okta-mcp-server-gateway
 
 # Docker Run Examples
 run-example: ## Show example of standalone docker run
-	@echo "$(BLUE)Example: Run MCP server without docker-compose$(NC)"
+	@echo "$(BLUE)Example: Run MCP server without docker compose$(NC)"
 	@echo ""
 	@echo "$(YELLOW)docker run -i --rm \\$(NC)"
 	@echo "  -e OKTA_ORG_URL=\"https://your-org.okta.com\" \\"
