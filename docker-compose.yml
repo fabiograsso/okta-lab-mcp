@@ -13,6 +13,7 @@ services:
       - OKTA_PRIVATE_KEY=${OKTA_PRIVATE_KEY}
       - OKTA_SCOPES=${OKTA_SCOPES:-okta.users.read}
       - OKTA_LOG_LEVEL=${OKTA_LOG_LEVEL:-INFO}
+      - OKTA_RATE_LIMIT=${OKTA_RATE_LIMIT:-600}
       - GATEWAY_LOG_LEVEL=${GATEWAY_LOG_LEVEL:-info}
     volumes:
       - ./data/okta-mcp/logs:/app/logs:rw
