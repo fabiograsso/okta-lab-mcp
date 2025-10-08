@@ -218,7 +218,7 @@ shell() {
 }
 
 # Run Gemini CLI inside container
-gemini() {
+gemini-cli() {
     if ! docker compose ps | grep -q "gemini-cli.*Up"; then
         log_error "Gemini CLI service is not running"
         log_info "Start it with: make start-gemini"
@@ -336,6 +336,9 @@ main() {
         "check-source")
             check_okta_source && log_success "Source code is present"
             ;;
+        "gemini-cli")
+            gemini-cli
+            ;;
         *)
             echo "Usage: $0 {setup|build|start|stop|restart|logs|clean|shell|status|health|test-gateway|backup|check-env|check-source}"
             echo ""
@@ -354,6 +357,7 @@ main() {
             echo "  backup        - Backup logs"
             echo "  check-env     - Verify .env configuration"
             echo "  check-source  - Verify source code presence"
+            echo "  gemini-cli    - Open Gemini CLI shell"
             exit 1
             ;;
     esac

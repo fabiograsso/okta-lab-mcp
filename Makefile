@@ -1,7 +1,7 @@
 # Makefile for Okta MCP Server
 # Simplifies common Docker commands
 
-.PHONY: help build start stop restart logs clean shell status gemini
+.PHONY: help build start stop restart logs clean shell status gemini-cli
 
 # Variables
 DOCKER_IMAGE := okta-mcp-server
@@ -152,9 +152,9 @@ run-example: ## Show example of standalone docker run
 	@echo ""
 	@echo "$(GREEN)No .env file needed with this method!$(NC)"
 
-gemini: ## Run Gemini tests inside container
+gemini-cli: ## Run Gemini tests inside container
 	@echo "$(GREEN)Running Gemini-cli...$(NC)"
-	@./docker-utils.sh gemini
+	@./docker-utils.sh gemini-cli
 
 # Aliases for convenience
 up: start ## Alias for start

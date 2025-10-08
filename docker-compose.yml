@@ -24,7 +24,7 @@ services:
       - "8000:8000"
 
   gemini-cli:
-    image: us-docker.pkg.dev/gemini-code-dev/gemini-cli/${GEMINI_CLI_VERSION:-sandbox:0.7.0}
+    image: us-docker.pkg.dev/gemini-code-dev/gemini-cli/${GEMINI_CLI_VERSION:-sandbox:0.8.1}
     volumes:
     - ./data/gemini/:/home/node/.gemini/:rw
     environment:
