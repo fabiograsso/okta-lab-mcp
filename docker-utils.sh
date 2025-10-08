@@ -242,17 +242,16 @@ check_health() {
     fi
     
     # Check okta-mcp-server
-    if docker compose ps | grep -q "okta-mcp-server.*Up"; then
-        log_success "okta-mcp-server is running"
+    if docker compose ps | grep -q "okta-mcp-server-gateway.*Up"; then
+        log_success "okta-mcp-server-gateway is running"
+    else
+        log_error "okta-mcp-server-gateway service is not running"
     fi
     
-    # Check gateway
-    if docker compose ps | grep -q "okta-mcp-server-gateway.*Up"; then
-        if curl -s -o /dev/null -w "%{http_code}" http://localhost:8000 | grep -q "200\|404"; then
-            log_success "Gateway is responding on port 8000"
-        else
-            log_warning "Gateway is running but not responding on port 8000"
-        fi
+    if curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/healtz | grep -q "200\|404"; then
+        log_success "Gateway is responding on port 8000"
+    else
+        log_warning "Gateway is running but not responding on port 8000"
     fi
     
     # Check Gemini CLI
@@ -271,11 +270,11 @@ test_gateway() {
         return 1
     fi
     
-    log_info "Sending test request to http://localhost:8000..."
+    log_info "Sending test request to http://localhost:8000/healthz..."
     
-    response=$(curl -s -w "\nHTTP_CODE:%{http_code}" http://localhost:8000 2>/dev/null || echo "FAILED")
+    response=$(curl -s -w "\nHTTP_CODE:%{http_code}" http://localhost:8000/healthz 2>/dev/null || echo "FAILED")
     
-    if echo "$response" | grep -q "HTTP_CODE:200\|HTTP_CODE:404"; then
+    if echo "$response" | grep -q "HTTP_CODE:200"; then
         log_success "Gateway is responding correctly"
     else
         log_error "Gateway test failed"
